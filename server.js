@@ -57,11 +57,20 @@ app.put("/albums/:albumId", function (req, res) {
 });
 
 //Borrar un album ya existente.
-app.delete("/albums/:albumId", function (req, res) {
+app.delete("/albums/:albumId", isAuth, function (req, res) {
   const id = req.params.albumId;
   const index = albums.findIndex((album) => album.albumId === id);
   albums.splice(index, 1);
   return res.send({ success: true });
 });
 
+// middleware function "permite seguir adelante ya sea con un post,delete o put si el usuario esta logueado"
+function isAuth(req, res, next) {
+  const userValidate = true;
+  if (userValidate) {
+    next(); //<-aqui simplemete si userValidate es true nos dejara avanzar.
+  } else {
+    res.send({ error: "User no logged in" });
+  }
+}
 app.listen(5000, () => console.log("Listening on port 5000"));
